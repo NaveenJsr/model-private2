@@ -31,16 +31,6 @@ const CSPMenu = ({cspDetail}) => {
                     </li>
                     <li>
                         <Link 
-                            to="/csp/requestAccess"
-                            className="nav-link"
-                            style={isActive(location.pathname, "/csp/requestAccess")}
-                            onClick={() => handleNavigate("/csp/requestAccess")}
-                        >
-                            Requests Access
-                        </Link>
-                    </li>
-                    <li>
-                        <Link 
                             to="/csp/log-history"
                             className="nav-link"
                             style={isActive(location.pathname, "/csp/log-history")}

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAccount, getCSPContract, getIdentityContract } from "../config";
+import { getAccount, getCSPContract} from "../config";
 import Header from "../core/Header";
 import CSPMenu from "./CSPMenu";
-import { fetchUploadedFiles } from "../helpers/uploadFile";
 
 const LogHistory = () => {
     const [account, setAccount] = useState("");
@@ -19,11 +18,9 @@ const LogHistory = () => {
 
                 const cspCon = await getCSPContract();
 
-                const idCon = await getIdentityContract();
-
                 const isCSP = await cspCon.checkCSP(acc);
 
-                if (!isCSP) {
+                if (!isCSP || !acc) {
                     navigate("/csp/register");
                     return;
                 }
@@ -31,7 +28,7 @@ const LogHistory = () => {
                 const cspDetails = await cspCon.getCSPDetail(acc);
                 setCSPDetail(cspDetails);
 
-                const log = await idCon.getLogHistory(acc);
+                const log = await cspCon.;
                 setLogHistory(log);
 
             } catch (error) {

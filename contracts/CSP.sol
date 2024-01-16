@@ -21,8 +21,6 @@ contract CSP {
     address contractOwner;
     Identity identityCon;
     LOG logCon;
-    Identity.VerificationResult public verifivcationResult;
-    LOG.AccessLog public accessLog;
 
     ToStr toStrCon = new ToStr();
 
@@ -64,7 +62,6 @@ contract CSP {
     //----------------csp registration
 
     function registerCSP(
-        address _cspAddress, 
         string memory _CSP_name, 
         string memory _apikey, 
         string memory _authDomain, 
@@ -75,17 +72,17 @@ contract CSP {
         string memory _measurmentId
     ) public returns (bool) {
 
-        require(!isCSP[_cspAddress], "CSP Already Registered");
+        require(!isCSP[msg.sender], "CSP Already Registered");
         for (uint i = 0; i < registeredCSPs.length; i++) {
             require(keccak256(abi.encodePacked(registeredCSPs[i].CSP_name)) != keccak256(abi.encodePacked(_CSP_name)), "CSP already Registered with this name");
         }
 
         Csp memory newCSP;
-        newCSP.CSP_Address = _cspAddress;
+        newCSP.CSP_Address = msg.sender;
         newCSP.CSP_name = _CSP_name;
         registeredCSPs.push(newCSP);
-        isCSP[_cspAddress] = true;
-        cspDetail[_cspAddress] = newCSP;
+        isCSP[msg.sender] = true;
+        cspDetail[msg.sender] = newCSP;
         FirebaseConfig memory newConfig;
         newConfig.apiKey = _apikey;
         newConfig.authDomain = _authDomain;
@@ -94,7 +91,7 @@ contract CSP {
         newConfig.messagingSenderId = _messagingSenderId;
         newConfig.appId = _appId;
         newConfig.measurmentId = _measurmentId;
-        fireCred[_cspAddress] = encode(newConfig);
+        fireCred[msg.sender] = encode(newConfig);
         return true;
     }
 
@@ -102,8 +99,8 @@ contract CSP {
         return decode(fireCred[_csp]);
     }
     
-    function checkCSP(address _csp) public view returns (bool) {
-        return isCSP[_csp];
+    function checkCSP() public view returns (bool) {
+        return isCSP[msg.sender];
     }
 
     //----------------upload File
@@ -159,8 +156,6 @@ contract CSP {
         string location;
     }
 
-    
-
     mapping (address => Requests[]) public requests;
     mapping (address => Grant[]) public grantedAccess;
     
@@ -194,6 +189,13 @@ contract CSP {
         Identity.VerificationResult memory verResult = identityCon.verifyToken(_user);
         require(verResult.success == true);
         return grantedAccess[_user];
+    }
+
+    //-----------get log History
+
+    function getLog() public view returns(LOG.AccessLog[] memory){
+        require(isCSP[msg.sender] == true);
+        return logCon.getLog(msg.sender);
     }
 
     //---------------base64

@@ -15,7 +15,7 @@ const RegisterCSP = () => {
         appId: "",
         measurementId: ""
     });
-    const [isCSP, setIsCSP] = useState(null);
+    // const [isCSP, setIsCSP] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,7 +28,7 @@ const RegisterCSP = () => {
                 setCSPContract(cspCon);
 
                 const isCSP = await cspCon.checkCSP(acc);
-                setIsCSP(isCSP)
+                // setIsCSP(isCSP)
                 if (isCSP) {
                     navigate("/csp/dashboard");
                 } else {
