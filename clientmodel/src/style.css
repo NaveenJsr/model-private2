@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Playfair+Display:wght@500&display=swap');
+
+.heading {
+    font-family: 'Open Sans', sans-serif;
+    font-family: 'Playfair Display', serif;
+}
+
+.copy-button {
+    cursor: pointer;
+}
+
+.copy-button :hover {
+    color: blue;
+    text-decoration: underline;
+}
+
+.center {
+    align-items: center;
+    align-content: center;
+    text-align: center;
+    margin-left: 30%;
+}
+
+.search-box {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.wide-search {
+    width: 50%;
+}
