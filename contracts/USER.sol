@@ -146,10 +146,6 @@ contract USER {
 
     //----------------request files
 
-    function getAllFile() public view returns(CSP.File[] memory){
-        return cspCon.getAllFiles();
-    }
-
     function requestFile(address _csp, string memory _fileHash ) public {
         require(isUser[msg.sender] == true);
         cspCon.requestFile(msg.sender, _csp, _fileHash);
