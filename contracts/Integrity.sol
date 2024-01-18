@@ -11,7 +11,7 @@ contract Strin {
     }
 }
 
-contract FileIntegrity {
+contract Integrity {
 
     address contractOwner;
     Strin stringUtils = new Strin();
@@ -22,29 +22,33 @@ contract FileIntegrity {
 
     struct RegFile {
         address csp;
-        string fileHash;
+        string desc;
+        string fileLocationHash;
+        string encDataHash;
         string createdAt;
     }
 
     mapping (address => RegFile[]) registeredFiles;
 
-    function registerFile(address _user, address _csp, string memory fileHash) external {
-        RegFile memory newFile;
-        newFile.csp = _csp;
-        newFile.fileHash = fileHash;
-        newFile.createdAt = stringUtils.toString(block.timestamp);
-        registeredFiles[_user].push(newFile);
+    function registerFile(address _user, address _csp, string memory _desc, string memory _fileLocHash, string memory _encdataHash, string memory _createdAt) external {
+        RegFile memory newfile = RegFile({
+            csp: _csp,
+            desc: _desc,
+            fileLocationHash: _fileLocHash,
+            encDataHash: _encdataHash,
+            createdAt: _createdAt
+        });
+        registeredFiles[_user].push(newfile);
     }
 
     function getRegFiles(address user) external view returns (RegFile[] memory) {
-        require(msg.sender == user);
         return registeredFiles[user];
     }
 
     function verifyDataOwner(address _user, string memory fileHash) external view returns (bool){
         if(registeredFiles[_user].length > 0){
             for(uint i = 0; i < registeredFiles[_user].length; i++){
-                if(keccak256(bytes(registeredFiles[_user][i].fileHash)) == keccak256(bytes(fileHash))){
+                if(keccak256(bytes(registeredFiles[_user][i].fileLocationHash)) == keccak256(bytes(fileHash))){
                     return true;
                 }
             }

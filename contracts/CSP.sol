@@ -95,7 +95,14 @@ contract CSP {
         return true;
     }
 
-    function getFireCred(address _csp) public view returns(FirebaseConfig memory){
+    function getFireConfig() public view returns(FirebaseConfig memory){
+        require(isCSP[msg.sender] == true);
+        return decode(fireCred[msg.sender]);
+    }
+
+    function getFireCred(address _user, address _csp) external view returns(FirebaseConfig memory){
+        Identity.VerificationResult memory verResult = identityCon.verifyToken(_user);
+        require(verResult.success == true);
         return decode(fireCred[_csp]);
     }
     
@@ -106,20 +113,23 @@ contract CSP {
     //----------------upload File
     struct File {
         address csp;
+        string desc;
         string fileLocationHash;
         string encDataHash;
+        string createdAt;
     }
 
-    mapping (address => File[]) public files;
+    File[] files;
 
-    function uploadFile(address _user, address csp, File memory _file) external{
+    function uploadFile(address _user, File memory _file) external{
         Identity.VerificationResult memory verResult = identityCon.verifyToken(_user);
         require(verResult.success == true);
-        File memory newFile;
-        newFile.csp = csp;
-        newFile.fileLocationHash = _file.fileLocationHash;
-        newFile.encDataHash = _file.encDataHash;
-        files[csp].push(newFile);
+        _file.createdAt = toStrCon.toString(block.timestamp);
+        files.push(_file);
+    }
+
+    function getAllFiles() external view returns(File[] memory){
+        return files;
     }
 
     //-----------csp List stored files

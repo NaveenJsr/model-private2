@@ -5,7 +5,7 @@ import GenerateShareArtifact from "./artifacts/contracts/Generate_Shares.sol/Gen
 import GenerateKeyArtifact from "./artifacts/contracts/Generate_Key.sol/Generate_Key.json";
 import aclArtifact from "./artifacts/contracts/ACL.sol/ACL.json";
 import logArtifact from "./artifacts/contracts/LOG.sol/LOG.json";
-import fileIntegrityArtifact from "./artifacts/contracts/FileIntegrity.sol/FileIntegrity.json";
+import fileIntegrityArtifact from "./artifacts/contracts/Integrity.sol/Integrity.json";
 import { ethers } from "ethers";
 
 export const getAccount = async () => {
@@ -42,7 +42,7 @@ export const getUserContract = async () => {
         
         const signer = provider.getSigner();
   
-        const contractAddress = "0x98C868A8190AD7c90261e38E2F39eD86b5213480";
+        const contractAddress = "0x408928a988cbb44d5e2D7d353Ba32C062Bc5940c";
 
         const contract = new ethers.Contract(
           contractAddress,
@@ -73,7 +73,7 @@ export const getCSPContract = async () => {
 
       const signer = provider.getSigner();
 
-      const contractAddress = "0xdf06ce1ef509891CcDc794F01EC58C1D16f960d3";
+      const contractAddress = "0x8c79EA272556CF0193e6d127486f75f883920F62";
 
       const contract = new ethers.Contract(
         contractAddress,

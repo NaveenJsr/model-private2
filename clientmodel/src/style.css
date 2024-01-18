@@ -29,3 +29,12 @@
 .wide-search {
     width: 50%;
 }
+
+.log-out-button {
+    color: blue;
+}
+
+.log-out-button :hover{
+    color: white;
+    background-color: red;
+}

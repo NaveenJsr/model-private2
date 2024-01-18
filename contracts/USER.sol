@@ -4,9 +4,19 @@ import "hardhat/console.sol";
 import "./Identity.sol";
 import "./CSP.sol";
 import "./ACL.sol";
-import "./FileIntegrity.sol";
+import "./Integrity.sol";
 import "./Generate_Shares.sol";
 import "./Generate_Key.sol";
+
+import "@openzeppelin/contracts/utils/Strings.sol";
+
+contract Stri {
+    using Strings for uint256;
+
+    function toString(uint256 _value) external pure returns (string memory) {
+        return Strings.toString(_value);
+    }
+}
 
 contract USER {
     address public owner;
@@ -14,10 +24,11 @@ contract USER {
     Identity identityCon;
     CSP cspCon;
     ACL aclCon;
-    FileIntegrity fileIntegrityCon;
+    Integrity integrityCon;
     Generate_Shares genShareCon;
     Generate_Key genkeyCon;
 
+    Stri toStrCon = new Stri();
 
     struct User {
         string user_name;
@@ -33,14 +44,14 @@ contract USER {
     constructor(address _identityCon, 
                 address _cspCon, 
                 address _aclCon, 
-                address _fileIntegrityCon, 
+                address _integrityCon, 
                 address _genShareCon, 
                 address _genkeyCon) {
         owner = msg.sender;
         identityCon = Identity(_identityCon);
         aclCon = ACL(_aclCon);
         cspCon = CSP(_cspCon);
-        fileIntegrityCon = FileIntegrity(_fileIntegrityCon);
+        integrityCon = Integrity(_integrityCon);
         genShareCon = Generate_Shares(_genShareCon);
         genkeyCon = Generate_Key(_genkeyCon);
     }
@@ -78,6 +89,11 @@ contract USER {
         return identityCon.verifyToken(msg.sender);
     }
 
+    function getUserdetail() public view returns(User memory){
+        require(isUser[msg.sender] == true);
+        return userDetails[msg.sender];
+    }
+
     //--------------authenticate user
 
     function authenticateUser(string memory _password) public {
@@ -95,9 +111,25 @@ contract USER {
 
     //---------------uploadFiles
 
-    function uploadFile(address _csp, CSP.File memory _file) public {
-        cspCon.uploadFile(msg.sender, _csp, _file);
+    function getCspFireCred(address _csp) public view returns(CSP.FirebaseConfig memory){
+        return cspCon.getFireCred(msg.sender, _csp);
+    }
 
+    function uploadFile(address _csp, string memory _desc, string memory _fileLocHash, string memory _encDataHash) public {
+        CSP.File memory _file = CSP.File({
+            csp: _csp,
+            desc: _desc,
+            fileLocationHash: _fileLocHash,
+            encDataHash: _encDataHash,
+            createdAt: toStrCon.toString(block.timestamp)
+        });
+        
+        cspCon.uploadFile(msg.sender, _file);
+        integrityCon.registerFile(msg.sender, _file.csp, _file.desc, _file.fileLocationHash, _file.encDataHash, _file.createdAt);
+    }
+
+    function getAllregFiles() public view returns(Integrity.RegFile[] memory){
+        return integrityCon.getRegFiles(msg.sender);
     }
 
     //------------generate key share
@@ -113,6 +145,10 @@ contract USER {
     }
 
     //----------------request files
+
+    function getAllFile() public view returns(CSP.File[] memory){
+        return cspCon.getAllFiles();
+    }
 
     function requestFile(address _csp, string memory _fileHash ) public {
         require(isUser[msg.sender] == true);

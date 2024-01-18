@@ -50,6 +50,7 @@ const RegisterCSP = () => {
             const res = await cspContract.registerCSP(formData.name, formData.apiKey, formData.authDomain, formData.projectId, formData.storageBucket, formData.messagingSenderId, formData.appId, formData.measurementId);
             await res.wait();
             alert("CSP registered successfully!");
+            window.location.reload();
             console.log("cspRegistered:", res);
         } catch (error) {
             console.log(error);

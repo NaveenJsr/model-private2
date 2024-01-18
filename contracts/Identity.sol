@@ -31,9 +31,14 @@ contract Identity {
     mapping(address => bytes) public  tokens; // user => newToken
 
     function requestToken(address _user) external {
-        bytes memory validationHash = abi.encodePacked(keccak256(abi.encodePacked(_user, block.timestamp, block.timestamp + 5200, contractOwner)));
-        bytes memory newToken = encodeToken(AccessToken(_user, block.timestamp, block.timestamp + 5200, validationHash));
-        tokens[_user] = newToken; 
+        if(tokens[_user].length != 0){
+            delete tokens[_user];
+        }
+        else{
+            bytes memory validationHash = abi.encodePacked(keccak256(abi.encodePacked(_user, block.timestamp, block.timestamp + 5200, contractOwner)));
+            bytes memory newToken = encodeToken(AccessToken(_user, block.timestamp, block.timestamp + 5200, validationHash));
+            tokens[_user] = newToken; 
+        }
     }
 
     struct VerificationResult {

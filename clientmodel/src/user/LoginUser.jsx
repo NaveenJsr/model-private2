@@ -86,7 +86,7 @@ const LoginUser = () => {
                                 </div>
                                 
                                 <button className="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">
-                                    Register
+                                    Login
                                 </button>
                             </form>
                         </div>

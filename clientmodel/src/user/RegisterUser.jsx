@@ -45,7 +45,9 @@ const RegisterUser = () => {
                 formData.name,
                 formData.password
             );
+            await res.wait();
             alert("User Registered Successfully!");
+            window.location.reload();
             console.log("user registered:", res)
         } catch (error) {
             console.log(error);

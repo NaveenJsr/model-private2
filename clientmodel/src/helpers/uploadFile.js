@@ -45,7 +45,7 @@ export const uploadFile = (file, fireConfig) => {
                 getDownloadURL(uploadTask.snapshot.ref)
                     .then((url) => {
                         const hashurl = hashUrl(url);
-                        console.log(hashurl);
+                        console.log("hashedUrl:",hashurl);
                         resolve(hashurl);
                     })
                     .catch((err) => {
@@ -74,7 +74,7 @@ export const fetchUploadedFiles = async (fireConfig) => {
             const metadata = await getMetadata(fileRef);
             const downloadURL = await getDownloadURL(fileRef);
             const urlHash = hashUrl(downloadURL);
-            return [ metadata.timeCreated, downloadURL, urlHash ];
+            return [ urlHash, downloadURL, metadata.timeCreated ];
         }));
 
         return filesArray;
