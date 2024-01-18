@@ -196,8 +196,6 @@ contract CSP {
     }
 
     function getGrantFiles(address _user) external view returns (Grant[] memory){
-        Identity.VerificationResult memory verResult = identityCon.verifyToken(_user);
-        require(verResult.success == true);
         return grantedAccess[_user];
     }
 
