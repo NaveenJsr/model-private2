@@ -19,7 +19,7 @@ const CSPDashboard = () => {
                 const cspCon = await getCSPContract();
                 setCSPContract(cspCon);
 
-                const isCSP = await cspCon.checkCSP(acc);
+                const isCSP = await cspCon.checkCSP();
                 console.log(isCSP);
                 if (!isCSP) {
                     navigate("/csp/register");

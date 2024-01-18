@@ -4,6 +4,7 @@ import "hardhat/console.sol";
 import "./Identity.sol";
 import "./CSP.sol";
 import "./ACL.sol";
+import "./FileIntegrity.sol";
 import "./Generate_Shares.sol";
 import "./Generate_Key.sol";
 
@@ -17,9 +18,6 @@ contract USER {
     Generate_Shares genShareCon;
     Generate_Key genkeyCon;
 
-    CSP.Requests public requests;
-    CSP.Grant public grant;
-    CSP.File public file;
 
     struct User {
         string user_name;
@@ -54,44 +52,59 @@ contract USER {
     }
 
     //---------------register user
-    function registerUser(address _userAddress, string memory _userName, string memory _password) public returns (bool) {
-        require(!isUser[_userAddress], "User is already registered");
+    function registerUser(string memory _userName, string memory _password) public returns (bool) {
+        require(!isUser[msg.sender], "User is already registered");
 
         User memory newUser = User({
             user_name: _userName, 
-            user_address: _userAddress, 
+            user_address: msg.sender, 
             hashedPassword: keccak256(abi.encodePacked(_password))
         });
-        userDetails[_userAddress] = newUser;
-        isUser[_userAddress] = true;
+        userDetails[msg.sender] = newUser;
+        isUser[msg.sender] = true;
 
         // Emit the UserRegistered event
-        emit UserRegistered(_userAddress);
+        emit UserRegistered(msg.sender);
 
         return true;
     }
 
+    //-----------varify user
+    function checkUser() public view returns(bool){
+        return isUser[msg.sender];
+    } 
+
+    function isAuthenticated() public view returns (Identity.VerificationResult memory) {
+        return identityCon.verifyToken(msg.sender);
+    }
 
     //--------------authenticate user
 
-    function authenticateUser(address _userAddress, string memory _password) public {
+    function authenticateUser(string memory _password) public {
         require(isUser[msg.sender] == true);
         require(userDetails[msg.sender].hashedPassword == keccak256(abi.encodePacked(_password)));
-        identityCon.requestToken(_userAddress);
+        identityCon.requestToken(msg.sender);
     }
 
     //----------signOut
 
-    function signOut(address _userAddress) public {
+    function signOut() public {
         require(isUser[msg.sender] == true);
-        identityCon.deleteToken(_userAddress);
+        identityCon.deleteToken(msg.sender);
     }
 
     //---------------uploadFiles
 
-    function uploadFile(address _user, address _csp, CSP.File memory _file) public {
-        cspCon.uploadFile(_user, _csp, _file);
+    function uploadFile(address _csp, CSP.File memory _file) public {
+        cspCon.uploadFile(msg.sender, _csp, _file);
 
+    }
+
+    //------------generate key share
+
+    function generateKeyShare(uint secret, uint n, string memory fileHash) public {
+        require(isUser[msg.sender] == true);
+        genShareCon.input(secret, n, fileHash);
     }
 
     //------------acl creation
@@ -101,24 +114,25 @@ contract USER {
 
     //----------------request files
 
-    function requestFile(address _user, address _csp, string memory _fileHash ) public {
+    function requestFile(address _csp, string memory _fileHash ) public {
         require(isUser[msg.sender] == true);
-        cspCon.requestFile(_user, _csp, _fileHash);
+        cspCon.requestFile(msg.sender, _csp, _fileHash);
     }
 
     //---------------get Accessed Files
 
-    function getgrantedFiles(address _user) public view returns(CSP.Grant[] memory){
+    function getgrantedFiles() public view returns(CSP.Grant[] memory){
         require(isUser[msg.sender] == true);
-        CSP.Grant[] memory grantedFiles = cspCon.getGrantFiles(_user);
+        CSP.Grant[] memory grantedFiles = cspCon.getGrantFiles(msg.sender);
         return grantedFiles;
     }
 
-    function generateKeyShare(uint secret, uint n, string memory fileHash) public {
+    function generageKey(string memory _fileHash) public {
         require(isUser[msg.sender] == true);
-        genShareCon.input(secret, n, fileHash);
+        genkeyCon.input(msg.sender, _fileHash);
     }
 
-    
-
+    function getKey(string memory _fileHash) public view returns(string[] memory){
+        return genkeyCon.getKey(msg.sender, _fileHash);
+    }
 }

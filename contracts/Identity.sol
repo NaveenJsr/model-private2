@@ -42,16 +42,25 @@ contract Identity {
     }
 
     function verifyToken(address _user) external view returns(VerificationResult memory) {
-        require(tokens[_user].length != 0);
-        AccessToken memory token = decodeToken(tokens[_user]);
-        bytes memory velidationHash1 = abi.encodePacked(keccak256(abi.encodePacked(_user, token.iat, token.exp, contractOwner)));
-        bytes32 hash1 = keccak256(velidationHash1);
-        bytes32 hash2 = keccak256(token.validationHash);
-        if(hash1 == hash2){
-            return VerificationResult(true, tosStrCon.toStr(token.exp));
+        if(tokens[_user].length != 0){
+            AccessToken memory token = decodeToken(tokens[_user]);
+            bytes memory velidationHash1 = abi.encodePacked(keccak256(abi.encodePacked(_user, token.iat, token.exp, contractOwner)));
+            bytes32 hash1 = keccak256(velidationHash1);
+            bytes32 hash2 = keccak256(token.validationHash);
+            if(hash1 == hash2){
+                if(token.exp > block.timestamp){
+                    return VerificationResult(true, tosStrCon.toStr(token.exp));
+                }
+                else{
+                    return VerificationResult(false, tosStrCon.toStr(token.exp));
+                }
+            }
+            else {
+                return VerificationResult(false, tosStrCon.toStr(token.exp));
+            }
         }
-        else {
-            return VerificationResult(false, tosStrCon.toStr(token.exp));
+        else{
+            return VerificationResult(false, tosStrCon.toStr(0));
         }
     }
 

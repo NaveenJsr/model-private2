@@ -84,14 +84,7 @@ async function main() {
   const FileIntegrity = await hre.ethers.getContractFactory("FileIntegrity");
   const fileIntegrity = await FileIntegrity.deploy();
 
-  const StringUtils = await ethers.getContractFactory("StringUtils");
-  const stringUtils = await StringUtils.deploy();
-
-  const Generate_Key = await hre.ethers.getContractFactory("Generate_Key", {
-    libraries: {
-      StringUtils: stringUtils.address
-    }
-  });
+  const Generate_Key = await hre.ethers.getContractFactory("Generate_Key");
   const generateKey = await Generate_Key.deploy(generateShare.address);
   
   const ACL = await hre.ethers.getContractFactory("ACL");

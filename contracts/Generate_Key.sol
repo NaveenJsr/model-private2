@@ -13,28 +13,11 @@ contract Str {
     }
 }
 
-library StringUtils {
-    using Strings for uint256;
-
-    function toUint(string memory _value) external pure returns (uint256) {
-        return abi.decode(bytes(_value), (uint256));
-    }
-}
-
-contract ToUint {
-    using StringUtils for string;
-
-    function toUint(string memory _stringValue) external pure returns (uint256) {
-        return _stringValue.toUint();
-    }
-}
 
 contract Generate_Key {
 
     address contractOwner;
     Generate_Shares genShareCon;
-
-    ToUint toUintCon = new ToUint();
 
     
     struct Share {
@@ -53,7 +36,6 @@ contract Generate_Key {
     Share[] public shares;
 
     function getKey(address _user, string memory _fileHash) public view returns(string[] memory){
-        require(msg.sender == _user);
         return key[_user][_fileHash];
     }
 
@@ -66,18 +48,18 @@ contract Generate_Key {
         string memory _hashFile
     ) external {
         Generate_Shares.ShareAandB memory shareDetals = genShareCon.read_Shares(_hashFile);
-        t = toUintCon.toUint(shareDetals.bk.t);
+        t = shareDetals.bk.t;
         require(shareDetals.shares.length == t, "Enter only threshold number of shares");
         delete shares;
         for (uint256 i; i < shareDetals.shares.length; ) {
-            Share memory newShare = Share({x: toUintCon.toUint(shareDetals.shares[i].x), y: toUintCon.toUint(shareDetals.shares[i].y)});
+            Share memory newShare = Share({x: shareDetals.shares[i].x, y: shareDetals.shares[i].y});
             shares.push(newShare);
             unchecked {
                 i++;
             } // optimizing gas
         }
 
-        b = toUintCon.toUint(shareDetals.bk.b);
+        b = shareDetals.bk.b;
         generate_Key(_user, _hashFile);
     }
 

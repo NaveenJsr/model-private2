@@ -27,7 +27,7 @@ const RegisterCSP = () => {
                 const cspCon = await getCSPContract();
                 setCSPContract(cspCon);
 
-                const isCSP = await cspCon.checkCSP(acc);
+                const isCSP = await cspCon.checkCSP();
                 // setIsCSP(isCSP)
                 if (isCSP) {
                     navigate("/csp/dashboard");
@@ -47,7 +47,8 @@ const RegisterCSP = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await cspContract.registerCSP(account, formData.name, formData.apiKey, formData.authDomain, formData.projectId, formData.storageBucket, formData.messagingSenderId, formData.appId, formData.measurementId);
+            const res = await cspContract.registerCSP(formData.name, formData.apiKey, formData.authDomain, formData.projectId, formData.storageBucket, formData.messagingSenderId, formData.appId, formData.measurementId);
+            await res.wait();
             alert("CSP registered successfully!");
             console.log("cspRegistered:", res);
         } catch (error) {

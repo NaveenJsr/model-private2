@@ -18,17 +18,17 @@ const LogHistory = () => {
 
                 const cspCon = await getCSPContract();
 
-                const isCSP = await cspCon.checkCSP(acc);
+                const isCSP = await cspCon.checkCSP();
 
                 if (!isCSP || !acc) {
                     navigate("/csp/register");
                     return;
                 }
 
-                const cspDetails = await cspCon.getCSPDetail(acc);
+                const cspDetails = await cspCon.getCSPDetail();
                 setCSPDetail(cspDetails);
 
-                const log = await cspCon.;
+                const log = await cspCon.getLog();
                 setLogHistory(log);
 
             } catch (error) {

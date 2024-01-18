@@ -48,15 +48,15 @@ contract Generate_Shares {
     }
 
     struct TempShare {
-        string x;
-        string y;
+        uint x;
+        uint y;
     }
 
     Share[] private  shares;
 
     struct BAndK {
-        string b;
-        string t;
+        uint b;
+        uint t;
     }
 
     mapping (string => TempShare[]) fileKeyShares;
@@ -112,16 +112,16 @@ contract Generate_Shares {
             // sharesY.push(evaluatePolynomial(sharesX[j]));    -----
             newShare.y = evaluatePolynomial(newShare.x);
             TempShare memory tShare;
-            tShare.x = tosStrCon.toStr(newShare.x);
-            tShare.y = tosStrCon.toStr(newShare.y);
+            tShare.x = newShare.x;
+            tShare.y = newShare.y;
 
             shares.push(newShare);
 
             fileKeyShares[fileHash].push(tShare);
         }
 
-        bAndK[fileHash].b = tosStrCon.toStr(b);
-        bAndK[fileHash].t = tosStrCon.toStr(k);
+        bAndK[fileHash].b = b;
+        bAndK[fileHash].t = k;
 
         delete b;
         delete z;
