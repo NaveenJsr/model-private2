@@ -153,11 +153,10 @@ contract USER {
 
     //---------------get Accessed Files
 
-    function getgrantedFiles() public view returns(CSP.Grant[] memory){
-        require(isUser[msg.sender] == true);
-        CSP.Grant[] memory grantedFiles = cspCon.getGrantFiles(msg.sender);
-        return grantedFiles;
-    }
+    // function getgrantedFiles() public view returns(CSP.Grant[] memory){
+    //     require(isUser[msg.sender] == true); 
+    //     return cspCon.getGrantFiles(msg.sender);
+    // }
 
     function generageKey(string memory _fileHash) public {
         require(isUser[msg.sender] == true);

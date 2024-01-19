@@ -6,6 +6,7 @@ import CSPMenu from "./CSPMenu";
 
 const LogHistory = () => {
     const [account, setAccount] = useState("");
+    const [isCSP, setIsCSP] = useState(false);
     const [cspDetail, setCSPDetail] = useState([]);
     const [logHistory, setLogHistory] = useState([]);
     const navigate = useNavigate();
@@ -19,7 +20,7 @@ const LogHistory = () => {
                 const cspCon = await getCSPContract();
 
                 const isCSP = await cspCon.checkCSP();
-
+                setIsCSP(isCSP);
                 if (!isCSP || !acc) {
                     navigate("/csp/register");
                     return;
@@ -57,7 +58,8 @@ const LogHistory = () => {
     return (
         <div>
             <Header account={account} />
-            <div className="d-flex">
+            {isCSP && (
+                <div className="d-flex">
                 <CSPMenu cspDetail={cspDetail} />
                 <div className="container">
                     <div className="bg-white">
@@ -80,8 +82,8 @@ const LogHistory = () => {
                                                 {logHistory.map((ele, i) => (
                                                     <tr key={i}>
                                                         <td>{ele.user.substring(0, 20) + "..."}</td>
-                                                        <td>{ele.hashFile.substring(0, 20) + "..."}</td>
-                                                        <td>{formatTimestamp(ele.accessedAt)}</td>
+                                                        <td>{ele.fileHash.substring(0, 20) + "..."}</td>
+                                                        <td>{formatTimestamp(ele.grantTime)}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -93,6 +95,7 @@ const LogHistory = () => {
                     </div>
                 </div>
             </div>
+            )}
         </div>
     );
 };

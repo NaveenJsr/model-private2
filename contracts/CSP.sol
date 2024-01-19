@@ -195,8 +195,8 @@ contract CSP {
         }
     }
 
-    function getGrantFiles(address _user) external view returns (Grant[] memory){
-        return grantedAccess[_user];
+    function getGrantFiles() external view returns (Grant[] memory){
+        return grantedAccess[msg.sender];
     }
 
     //-----------get log History

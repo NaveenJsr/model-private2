@@ -111,7 +111,8 @@ const UploadData = () => {
     return (
         <div>
             <Header account={account} />
-            <div className="d-flex">
+            {isAuthenticated.success && (
+              <div className="d-flex">
                 <div>
                     <UserMenu userDetail={userDetail} isAuthenticated={isAuthenticated} />
                 </div>
@@ -174,6 +175,7 @@ const UploadData = () => {
                     </div>
                 </div>
             </div>
+            )}
         </div>
     );
 };

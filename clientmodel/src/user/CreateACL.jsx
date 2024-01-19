@@ -105,7 +105,8 @@ const CreateACL = () => {
     return (
         <div>
             <Header account={account} />
-            <div className="d-flex">
+            {isAuthenticated.success && (
+                <div className="d-flex">
                 <div>
                     <UserMenu userDetail={userDetail} isAuthenticated={isAuthenticated} />
                 </div>
@@ -160,6 +161,7 @@ const CreateACL = () => {
                     </div>
                 </div>
             </div>
+            )}
         </div>
     );
 };

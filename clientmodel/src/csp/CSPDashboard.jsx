@@ -8,6 +8,7 @@ import { fetchUploadedFiles } from "../helpers/uploadFile";
 const CSPDashboard = () => {
     const [account, setAccount] = useState("");
     const [cspContract, setCSPContract] = useState(null);
+    const [isCSP, setIsCSP] = useState(false);
     const [cspDetail, setCspDetail] = useState([]);
     const [listedFiles, setListedFiles] = useState([]);
     const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -23,11 +24,13 @@ const CSPDashboard = () => {
                 setCSPContract(cspCon);
 
                 const isCSP = await cspCon.checkCSP();
-                console.log(isCSP);
+                // console.log(isCSP);
+                setIsCSP(isCSP);
                 if (!isCSP) {
                     navigate("/csp/register");
                     return;
                 }
+                
 
                 const cspdetail = await  cspCon.getCSPDetail();
                 console.log(cspdetail)
@@ -73,6 +76,7 @@ const CSPDashboard = () => {
     return (
         <div>
            <Header account={account} />
+           {isCSP && (
             <div className="d-flex">
                 <CSPMenu cspDetail={cspDetail} />
                 <div className="container">
@@ -150,6 +154,7 @@ const CSPDashboard = () => {
                     }
                 </div>
             </div>
+           )} 
         </div>
     );
 };

@@ -3,6 +3,9 @@ import { getAccount, getCSPContract, getUserContract } from "../config";
 import { useNavigate } from "react-router-dom";
 import Header from "../core/Header";
 import UserMenu from "./UserMenu";
+import { getText } from "../helpers/readdata";
+import { decryptFile } from "../helpers/aes-config";
+const CryptoJS = require('crypto-js');
 
 const UserDashboard = () => {
     const [account, setAccount] = useState("");
@@ -11,7 +14,7 @@ const UserDashboard = () => {
     const [userDetail, setUserDetail] = useState([]);
     const [fileList, setFileList] = useState([]);
     const [searchKey, setSearchKey] = useState(null);
-    const [searchList, setSearchList] = useState([]);
+    const [searchList, setSearchList] = useState(null);
     const [accessedFiles, setAccessedfiles] = useState([]);
 
     const navigate = useNavigate();
@@ -44,11 +47,11 @@ const UserDashboard = () => {
 
                 const cspCon = await getCSPContract();
                 const files = await cspCon.getAllFiles();
-                console.log("stored Files:",files);
+                // console.log("stored Files:",files);
                 setFileList(files);
 
-                const accFiles = await userContract.getgrantedFiles();
-                console.log("accessedfiles:",accFiles)
+                const accFiles = await cspCon.getGrantFiles(accountRes);
+                // console.log("accessedfiles:",accFiles)
                 setAccessedfiles(accFiles);
 
             } catch (error) {
@@ -78,19 +81,19 @@ const UserDashboard = () => {
             return descLower.includes(searchKeyLower);
         });
 
-        console.log(filteredList);
+        // console.log(filteredList);
 
         setSearchList(filteredList);
     }; 
 
     const handleSubmit = async (csp, file) => {
         try{
-            console.log(csp, file)
+            // console.log(csp, file)
             const resreq = await userContract.requestFile(csp, file);
             await resreq.wait();
             alert("Accessed...");
             window.location.reload();
-            console.log("Accessrequested",resreq);
+            // console.log("Accessrequested",resreq);
         }
         catch(error){
             alert("Unable to request access...")
@@ -98,10 +101,74 @@ const UserDashboard = () => {
         }
     }
 
+    const cryptoHash = (input) => {
+        const hash = CryptoJS.SHA256(input).toString(CryptoJS.enc.Hex);
+        return hash;
+    };
+
+    const decrypt = (location, key, encDataHash) => {
+        if(!location && !key && !encDataHash){
+            return;
+        }
+
+        getText(location)
+            .then((res) => {
+                const encDataHash1 = cryptoHash(res);
+                const decryptText = decryptFile(res, key[0]);
+                const decryptedBlob = new Blob([decryptText], {type: 'text/plain'});
+                if(encDataHash1 === encDataHash){
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = URL.createObjectURL(decryptedBlob);
+                    downloadLink.download = `textfile`;
+                    downloadLink.click();
+                }
+            })
+            .catch(error => console.log(error));
+    }
+
+    const handleGenerateKey = async (file, keySharesDetail) => {
+        try {
+            // Call the generateKeyContract.input function
+            const inputTransaction = await userContract.generageKey(file);
+            // console.log("key generation processing...")
+            // Wait for the transaction to be confirmed
+            await inputTransaction.wait();
+            // console.log("key generated...")
+    
+            // Once the transaction is confirmed, call generateKeyContract.getKey
+            const key = await userContract.getKey(file);
+            return key;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    
+
+    const handleDownload = async (file, location, encDataHash) => {
+        try {
+            // console.log(keySharesDetail)
+            var key = await userContract.getKey(file);
+            
+            if (key.length === 0) {
+                // console.log("key not found...")
+                // Call the new function handleGenerateKey
+                const k = await handleGenerateKey(file);
+                key = k;
+            }
+
+            // console.log(key,location, encDataHash);
+            decrypt(location, key, encDataHash);
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <div>
             <Header account={account} />
-            <div className="d-flex">
+            {isAuthenticated.success && (
+                <div className="d-flex">
                 <UserMenu userDetail={userDetail} isAuthenticated={isAuthenticated} />
                 <div className="container">
                     <div className="model model-sheet position-static d-block bg-white py-sm-4">
@@ -155,13 +222,46 @@ const UserDashboard = () => {
                                     </div>
                                 )}
 
-
+                                {accessedFiles.length === 0 ? (null) : (
+                                    <div className="bg-white">
+                                        <div className="p-3">
+                                            <h3>Accessed Files</h3>
+                                            <div className="border rounded-3">
+                                                <div className="table-responsive p-3">
+                                                    <table className="table">
+                                                        <tbody>
+                                                            {accessedFiles.map((data, index) => (
+                                                                <tr key={index}>
+                                                                    <td>
+                                                                        {fileList.map((ele) => (
+                                                                            ele.fileLocationHash === data.fileHash && (
+                                                                                <span><strong>{ele.desc}</strong></span>
+                                                                            )
+                                                                        ))}
+                                                                    </td>
+                                                                    <td>
+                                                                        {fileList.map((ele) => (
+                                                                            ele.fileLocationHash === data.fileHash && (
+                                                                                <button className="btn btn-primary btn-sm" onClick={() => handleDownload(data.fileHash, data.location, ele.encDataHash)}>Download</button>
+                                                                            )
+                                                                        ))}
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
 
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            )}
         </div>
     )
 

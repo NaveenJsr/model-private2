@@ -33,6 +33,9 @@ contract Identity {
     function requestToken(address _user) external {
         if(tokens[_user].length != 0){
             delete tokens[_user];
+            bytes memory validationHash = abi.encodePacked(keccak256(abi.encodePacked(_user, block.timestamp, block.timestamp + 5200, contractOwner)));
+            bytes memory newToken = encodeToken(AccessToken(_user, block.timestamp, block.timestamp + 5200, validationHash));
+            tokens[_user] = newToken; 
         }
         else{
             bytes memory validationHash = abi.encodePacked(keccak256(abi.encodePacked(_user, block.timestamp, block.timestamp + 5200, contractOwner)));
