@@ -41,4 +41,17 @@ contract ACL {
         newACL.sig.s1 = _s1;
         newACL.sig.s2 = _s2;
     }
+
+    function varifyAcl(address _user, address _csp, string memory _id) external view returns(bool) {
+        Acl memory tAcl = acl[_csp][_id];
+        if(tAcl.isPublic == true){
+            return true;
+        }
+        else{
+            if(integrityCon.verifyDataOwner(_user, _id) == true){
+                return true;
+            }
+            return false;
+        }
+    }
 }

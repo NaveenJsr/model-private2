@@ -2,6 +2,7 @@
 pragma solidity 0.8.23;
 import "./Identity.sol";
 import "./LOG.sol";
+import "./ACL.sol";
 
 // Import necessary OpenZeppelin library
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -21,13 +22,15 @@ contract CSP {
     address contractOwner;
     Identity identityCon;
     LOG logCon;
+    ACL aclCon;
 
     ToStr toStrCon = new ToStr();
 
-    constructor(address _identityCon, address _logCon) {
+    constructor(address _identityCon, address _logCon, address _aclCon) {
         contractOwner = msg.sender;
         identityCon = Identity(_identityCon);
         logCon = LOG(_logCon);
+        aclCon = ACL(_aclCon);
     }
 
     struct Csp {
@@ -181,17 +184,18 @@ contract CSP {
             
             for(uint i = 0; i < listedFiles[_csp].length; i++){
                 if (bytes(listedFiles[_csp][i].fileHash).length == bytes(_fileHash).length && keccak256(bytes(listedFiles[_csp][i].fileHash)) == keccak256(bytes(_fileHash))) {
+                    require(aclCon.varifyAcl(_user, _csp, _fileHash) == true);
                     Grant memory newGrant = Grant({fileHash: listedFiles[_csp][i].fileHash, location: listedFiles[_csp][i].location});
                     grantedAccess[_user].push(newGrant);
+                    LOG.AccessLog memory newlog = LOG.AccessLog({
+                        user: _user,
+                        fileHash: _fileHash,
+                        grantTime: toStrCon.toString(block.timestamp)
+                    });
+                    logCon.addAccessLog(_csp, newlog);
                 }
             }
-            LOG.AccessLog memory newlog = LOG.AccessLog({
-                user: _user,
-                fileHash: _fileHash,
-                grantTime: toStrCon.toString(block.timestamp)
-            });
-
-            logCon.addAccessLog(_csp, newlog);
+            
         }
     }
 

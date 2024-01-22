@@ -47,11 +47,11 @@ const UserDashboard = () => {
 
                 const cspCon = await getCSPContract();
                 const files = await cspCon.getAllFiles();
-                // console.log("stored Files:",files);
+                console.log("stored Files:",files);
                 setFileList(files);
 
-                const accFiles = await cspCon.getGrantFiles(accountRes);
-                // console.log("accessedfiles:",accFiles)
+                const accFiles = await cspCon.getGrantFiles();
+                console.log("accessedfiles:",accFiles)
                 setAccessedfiles(accFiles);
 
             } catch (error) {
@@ -96,7 +96,7 @@ const UserDashboard = () => {
             // console.log("Accessrequested",resreq);
         }
         catch(error){
-            alert("Unable to request access...")
+            alert("Only private user can access this file...")
             console.log("unable to request access", error);
         }
     }

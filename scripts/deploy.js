@@ -1,71 +1,3 @@
-// const { error } = require("console");
-// const hre = require("hardhat");
-
-// async function main(){
-//   const CSPs = await hre.ethers.getContractFactory("CSPs");
-//   const Identity = await hre.ethers.getContractFactory("Identity");
-//   const User = await hre.ethers.getContractFactory("DataUser");
-//   const Generate_Shares = await hre.ethers.getContractFactory("Generate_Shares");
-//   const Generate_Key = await hre.ethers.getContractFactory("Generate_Key");
-
-//   const csp = await CSPs.deploy();
-//   const identity = await Identity.deploy();
-//   const user = await User.deploy();
-//   const generateShares = await Generate_Shares.deploy();
-//   const generateKey = await Generate_Key.deploy();
-
-//   await csp.deployed();
-//   await identity.deployed();
-//   await user.deployed();
-//   await generateShares.deployed();
-//   await generateKey.deployed();
-
-//   console.log("CSP deployed to: ", csp.address);
-//   console.log("Identity deployed to: ", identity.address);
-//   console.log("User deployed to: ", user.address);
-//   console.log("generateShare :", generateShares.address);
-//   console.log("generateKey:", generateKey.address);
-
-// }
-
-// main().catch((error) => {
-//   console.error(error);
-//   process.exitCode = 1;
-// });
-
-
-// const { ethers } = require("hardhat");
-
-// async function main() {
-//   const [deployer] = await ethers.getSigners();
-//   console.log("deploying contracts with account:", deployer.address);
-
-//   const CSPs = await hre.ethers.getContractFactory("CSPs");
-//   const Identity = await hre.ethers.getContractFactory("Identity");
-//   const User = await hre.ethers.getContractFactory("DataUser");
-//   const Generate_Shares = await hre.ethers.getContractFactory("Generate_Shares");
-//   const Generate_Key = await hre.ethers.getContractFactory("Generate_Key");
-
-//   const csp = await CSPs.deploy();
-//   const identity = await Identity.deploy();
-//   const user = await User.deploy();
-//   const generateShares = await Generate_Shares.deploy();
-//   const generateKey = await Generate_Key.deploy();
-
-//   console.log("CSP deployed to: ", csp.address);
-//   console.log("Identity deployed to: ", identity.address);
-//   console.log("User deployed to: ", user.address);
-//   console.log("generateShare :", generateShares.address);
-//   console.log("generateKey:", generateKey.address);
-// }
-
-// main()
-//   .then(() => process.exit(0))
-//   .catch((error) => {
-//     console.error(error);
-//     process.exit(1);
-//   });
-
 const hre = require("hardhat");
 
 async function main() {
@@ -91,7 +23,7 @@ async function main() {
   const acl = await ACL.deploy(integrity.address, identity.address);
 
   const CSP = await hre.ethers.getContractFactory("CSP");
-  const csp = await CSP.deploy(identity.address, log.address);
+  const csp = await CSP.deploy(identity.address, log.address, acl.address);
 
   const USER = await hre.ethers.getContractFactory("USER");
   const user = await USER.deploy(identity.address, csp.address, acl.address, integrity.address, generateShare.address, generateKey.address);
