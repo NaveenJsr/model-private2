@@ -20,4 +20,15 @@
   "measurementId": "G-QYV83N0BPB"
 }
 
+
+{
+  "apiKey": "AIzaSyBiUE37qQEnOxrrWd9Cz5hX7xGVvtICJXk",
+  "authDomain": "composite-keel-412010.firebaseapp.com",
+  "projectId": "composite-keel-412010",
+  "storageBucket": "composite-keel-412010.appspot.com",
+  "messagingSenderId": "236248975641",
+  "appId": "1:236248975641:web:6ea79cb697b6b075495d88",
+  "measurementId": "G-RLT1N59EEQ"
+}
+
 */

@@ -5,11 +5,10 @@ import "./Identity.sol";
 
 contract ACL {
 
-    address contractOwner;
-    Integrity integrityCon;
-    Identity identityCon;
-    Identity.VerificationResult public verifivcationResult;
-
+    address public contractOwner;
+    Integrity public integrityCon;
+    Identity public identityCon;
+    Identity.VerificationResult public verificationResult;
 
     constructor (address _integrityCon, address _identityCon) {
         contractOwner = msg.sender;
@@ -23,18 +22,19 @@ contract ACL {
     }
 
     struct Acl {
-        string id; // hash of file lcation
-        bool isPublic; 
+        string id; // hash of file location
+        bool isPublic; // file type
         Signature sig; // ecdsa 
-        bool accessMode; //true => write, false => read
+        bool accessMode; // true => write, false => read
     }
 
     mapping(address => mapping(string => Acl)) private acl;
 
     function createACL(address _user, address _csp, string memory _id, bool _isPublic, string memory _s1, string memory _s2) public {
         Identity.VerificationResult memory verResult = identityCon.verifyToken(_user);
-        require(verResult.success == true); 
-        require(integrityCon.verifyDataOwner(_user, _id) == true);
+        require(verResult.success, "User verification failed");
+        require(integrityCon.verifyDataOwner(_user, _id), "Data owner verification failed");
+
         Acl storage newACL = acl[_csp][_id];
         newACL.id = _id;
         newACL.isPublic = _isPublic;
@@ -42,15 +42,15 @@ contract ACL {
         newACL.sig.s2 = _s2;
     }
 
-    function varifyAcl(address _user, address _csp, string memory _id) external view returns(bool) {
+    function varifyAcl(address _user, address _csp, string memory _id) external view returns (bool) {
         Acl memory tAcl = acl[_csp][_id];
-        if(tAcl.isPublic == true){
+        if (tAcl.isPublic == true) {
             return true;
         }
-        else{
-            if(integrityCon.verifyDataOwner(_user, _id) == true){
-                return true;
-            }
+        else if(integrityCon.verifyDataOwner(_user, _id) == true){
+            return true;
+        } 
+        else {
             return false;
         }
     }

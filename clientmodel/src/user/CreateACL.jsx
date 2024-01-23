@@ -13,7 +13,7 @@ const CreateACL = () => {
     const [formData, setFormData] = useState({
         fileLocation: "",
         csp: "",
-        isPublic: true,
+        isPublic: "",
         signature: {
             s1: "",
             s2: ""
@@ -143,8 +143,9 @@ const CreateACL = () => {
                                                 value={formData.isPublic}
                                                 onChange={handleAccess}
                                             >
-                                                <option value={true}>Yes</option>
-                                                <option value={false}>No</option>
+                                                <option value="">--Select--</option>
+                                                <option value="true">Yes</option>
+                                                <option value="false">No</option>
                                             </select>
                                         </div>
                                         <div className="mb-2">

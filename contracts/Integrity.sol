@@ -45,17 +45,17 @@ contract Integrity {
         return registeredFiles[user];
     }
 
-    function verifyDataOwner(address _user, string memory fileHash) external view returns (bool){
-        if(registeredFiles[_user].length > 0){
-            for(uint i = 0; i < registeredFiles[_user].length; i++){
-                if(keccak256(bytes(registeredFiles[_user][i].fileLocationHash)) == keccak256(bytes(fileHash))){
+    function verifyDataOwner(address _user, string memory fileHash) external view returns (bool) {
+        uint filesLength = registeredFiles[_user].length;
+        if (filesLength > 0) {
+            for (uint i = 0; i < filesLength; i++) {
+                bytes32 targetHash = keccak256(abi.encodePacked(registeredFiles[_user][i].fileLocationHash)); 
+                bytes32 fileHashBytes = keccak256(abi.encodePacked(fileHash));
+                if (targetHash == fileHashBytes) {
                     return true;
                 }
             }
-            return false;
         }
-        else{
-            return false;
-        }
+        return false;
     }
 }

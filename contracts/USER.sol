@@ -94,7 +94,7 @@ contract USER {
         return userDetails[msg.sender];
     }
 
-    //--------------authenticate user
+    //--------------authenticate user (login)
 
     function authenticateUser(string memory _password) public {
         require(isUser[msg.sender] == true);

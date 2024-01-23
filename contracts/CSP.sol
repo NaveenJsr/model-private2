@@ -175,27 +175,31 @@ contract CSP {
 
     function requestFile(address _user, address _csp, string memory _fileHash) external {
         Identity.VerificationResult memory verResult = identityCon.verifyToken(_user);
-        if(verResult.success){
-            Requests memory req;
-            req.user = _user;
-            req.fileHash = _fileHash;
-            req.isGranted = true;
-            requests[_csp].push(req);
-            
-            for(uint i = 0; i < listedFiles[_csp].length; i++){
-                if (bytes(listedFiles[_csp][i].fileHash).length == bytes(_fileHash).length && keccak256(bytes(listedFiles[_csp][i].fileHash)) == keccak256(bytes(_fileHash))) {
-                    require(aclCon.varifyAcl(_user, _csp, _fileHash) == true);
-                    Grant memory newGrant = Grant({fileHash: listedFiles[_csp][i].fileHash, location: listedFiles[_csp][i].location});
-                    grantedAccess[_user].push(newGrant);
-                    LOG.AccessLog memory newlog = LOG.AccessLog({
-                        user: _user,
-                        fileHash: _fileHash,
-                        grantTime: toStrCon.toString(block.timestamp)
-                    });
-                    logCon.addAccessLog(_csp, newlog);
-                }
+
+        require(verResult.success, "User verification failed");
+        require(aclCon.varifyAcl(_user, _csp, _fileHash), "ACL verification failed");
+
+        Requests memory req;
+        req.user = _user;
+        req.fileHash = _fileHash;
+        req.isGranted = true;
+        requests[_csp].push(req);
+
+        for (uint i = 0; i < listedFiles[_csp].length; i++) {
+            if (keccak256(bytes(listedFiles[_csp][i].fileHash)) == keccak256(bytes(_fileHash))) {
+                Grant memory newGrant = Grant({
+                    fileHash: listedFiles[_csp][i].fileHash,
+                    location: listedFiles[_csp][i].location
+                });
+                grantedAccess[_user].push(newGrant);
+
+                LOG.AccessLog memory newlog = LOG.AccessLog({
+                    user: _user,
+                    fileHash: _fileHash,
+                    grantTime: toStrCon.toString(block.timestamp)
+                });
+                logCon.addAccessLog(_csp, newlog);
             }
-            
         }
     }
 

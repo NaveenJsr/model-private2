@@ -47,11 +47,11 @@ const UserDashboard = () => {
 
                 const cspCon = await getCSPContract();
                 const files = await cspCon.getAllFiles();
-                console.log("stored Files:",files);
+                // console.log("stored Files:",files);
                 setFileList(files);
 
                 const accFiles = await cspCon.getGrantFiles();
-                console.log("accessedfiles:",accFiles)
+                // console.log("accessedfiles:",accFiles)
                 setAccessedfiles(accFiles);
 
             } catch (error) {
@@ -114,9 +114,9 @@ const UserDashboard = () => {
         getText(location)
             .then((res) => {
                 const encDataHash1 = cryptoHash(res);
-                const decryptText = decryptFile(res, key[0]);
-                const decryptedBlob = new Blob([decryptText], {type: 'text/plain'});
                 if(encDataHash1 === encDataHash){
+                    const decryptText = decryptFile(res, key[0]);
+                    const decryptedBlob = new Blob([decryptText], {type: 'text/plain'});
                     const downloadLink = document.createElement('a');
                     downloadLink.href = URL.createObjectURL(decryptedBlob);
                     downloadLink.download = `textfile`;
@@ -126,7 +126,7 @@ const UserDashboard = () => {
             .catch(error => console.log(error));
     }
 
-    const handleGenerateKey = async (file, keySharesDetail) => {
+    const handleGenerateKey = async (file) => {
         try {
             // Call the generateKeyContract.input function
             const inputTransaction = await userContract.generageKey(file);
