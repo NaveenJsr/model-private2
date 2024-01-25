@@ -25,7 +25,7 @@ module.exports = {
   networks: {
     goerli: {
       url: `https://goerli.infura.io/v3/b92d8f22539c489cb3be1f0a699133e6`,
-      accounts: ["17b52eb8214e353b1ebac7dc7f6bd1c8a8ff1e3d333d28042e84b04ac8625e30"],
+      accounts: ["de208dcfe43edc294ff14017a4b984e9e70d01d30abcf9a30dee4518f182bc07"],
     },
   },
   paths: {

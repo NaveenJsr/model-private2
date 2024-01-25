@@ -23,7 +23,7 @@ async function main() {
   const acl = await ACL.deploy(integrity.address, identity.address);
 
   const CSP = await hre.ethers.getContractFactory("CSP");
-  const csp = await CSP.deploy(identity.address, log.address, acl.address);
+  const csp = await CSP.deploy(identity.address, log.address, acl.address, integrity.address);
 
   const USER = await hre.ethers.getContractFactory("USER");
   const user = await USER.deploy(identity.address, csp.address, acl.address, integrity.address, generateShare.address, generateKey.address);

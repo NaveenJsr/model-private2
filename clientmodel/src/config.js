@@ -1,7 +1,5 @@
 import UserArtifact from "./artifacts/contracts/USER.sol/USER.json";
 import CSPArtifact from "./artifacts/contracts/CSP.sol/CSP.json";
-import integrityArtifact from "./artifacts/contracts/Integrity.sol/Integrity.json";
-import aclArtifact from "./artifacts/contracts/ACL.sol/ACL.json";
 import { ethers } from "ethers";
 
 export const getAccount = async () => {
@@ -38,7 +36,7 @@ export const getUserContract = async () => {
         
         const signer = provider.getSigner();
   
-        const contractAddress = "0xa13427402469B96EC3d09C277fcfE4E54D1A49bc";
+        const contractAddress = "0x930b46EFA6b81A3099800092AF83dD9B586d9F04";
 
         const contract = new ethers.Contract(
           contractAddress,
@@ -69,7 +67,7 @@ export const getCSPContract = async () => {
 
       const signer = provider.getSigner();
 
-      const contractAddress = "0xfFC90c6eBF844Ee518c68F4742EEcc99e9eFFe89";
+      const contractAddress = "0xC6226Fe04799a488cd1B22303C732D1069E305E6";
 
       const contract = new ethers.Contract(
         contractAddress,

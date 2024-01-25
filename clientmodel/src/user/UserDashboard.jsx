@@ -91,6 +91,7 @@ const UserDashboard = () => {
             // console.log(csp, file)
             const resreq = await userContract.requestFile(csp, file);
             await resreq.wait();
+            console.log(resreq);
             alert("Accessed...");
             window.location.reload();
             // console.log("Accessrequested",resreq);
@@ -106,24 +107,16 @@ const UserDashboard = () => {
         return hash;
     };
 
-    const decrypt = (location, key, encDataHash) => {
-        if(!location && !key && !encDataHash){
+    const decrypt = (encData, key) => {
+        if(!encData && !key){
             return;
         }
-
-        getText(location)
-            .then((res) => {
-                const encDataHash1 = cryptoHash(res);
-                if(encDataHash1 === encDataHash){
-                    const decryptText = decryptFile(res, key[0]);
-                    const decryptedBlob = new Blob([decryptText], {type: 'text/plain'});
-                    const downloadLink = document.createElement('a');
-                    downloadLink.href = URL.createObjectURL(decryptedBlob);
-                    downloadLink.download = `textfile`;
-                    downloadLink.click();
-                }
-            })
-            .catch(error => console.log(error));
+        const decryptText = decryptFile(encData, key[0]);
+        const decryptedBlob = new Blob([decryptText], {type: 'text/plain'});
+        const downloadLink = document.createElement('a');
+        downloadLink.href = URL.createObjectURL(decryptedBlob);
+        downloadLink.download = `textfile`;
+        downloadLink.click();
     }
 
     const handleGenerateKey = async (file) => {
@@ -146,23 +139,24 @@ const UserDashboard = () => {
 
     const handleDownload = async (file, location, encDataHash) => {
         try {
-            // console.log(keySharesDetail)
-            var key = await userContract.getKey(file);
+            const res = await getText(location);
+            // console.log(res);
+            const dataHash1 = cryptoHash(res);
             
-            if (key.length === 0) {
-                // console.log("key not found...")
-                // Call the new function handleGenerateKey
-                const k = await handleGenerateKey(file);
-                key = k;
-            }
-
-            // console.log(key,location, encDataHash);
-            decrypt(location, key, encDataHash);
-
+            if (dataHash1 === encDataHash) {
+                let key = await userContract.getKey(file);
+    
+                if (key.length === 0) {
+                    key = await handleGenerateKey(file);
+                }
+    
+                decrypt(res, key);
+            } 
         } catch (error) {
-            console.log(error);
+            console.error("Error during file download:", error);
         }
     };
+    
 
     return (
         <div>
