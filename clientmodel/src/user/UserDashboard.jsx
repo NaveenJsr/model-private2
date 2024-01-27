@@ -138,12 +138,15 @@ const UserDashboard = () => {
     
 
     const handleDownload = async (file, location, encDataHash) => {
+        console.log(file, location, encDataHash);
         try {
             const res = await getText(location);
             // console.log(res);
             const dataHash1 = cryptoHash(res);
             
-            if (dataHash1 === encDataHash) {
+            const dataInterity = await userContract.checkInterity(file, dataHash1);
+
+            if (dataInterity) {
                 let key = await userContract.getKey(file);
     
                 if (key.length === 0) {

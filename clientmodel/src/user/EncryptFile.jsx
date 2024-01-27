@@ -57,6 +57,7 @@ const EncryptFile = () => {
     };
 
     const encrypt = () => {
+        const start = performance.now();
         if(!isAuthenticated){
             navigate("/user/login");
         }
@@ -82,8 +83,11 @@ const EncryptFile = () => {
             downloadLink.href = URL.createObjectURL(encryptedBlob);
             downloadLink.download = `encrypted_${file.name}`;
             downloadLink.click();
+            const end = performance.now();
+            console.log(`Execution time: ${(end - start) / 1000} sec for file of size ${(file.size / 1024) / 1024} mb`); 
         };
         reader.readAsArrayBuffer(file);
+           
     };
 
     const handleCopySignature = () => {

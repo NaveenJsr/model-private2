@@ -17,8 +17,6 @@
 
 require("@nomicfoundation/hardhat-toolbox");
 
-// const INFURA_API_KEY = "b92d8f22539c489cb3be1f0a699133e6"; // Replace with your Infura API key
-
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: "0.8.23",

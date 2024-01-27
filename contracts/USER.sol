@@ -166,4 +166,9 @@ contract USER {
     function getKey(string memory _fileHash) public view returns(string[] memory){
         return genkeyCon.getKey(msg.sender, _fileHash);
     }
+
+    //-------check data Integrity
+    function checkInterity(string memory file, string memory dataHash) public returns(bool){
+        return integrityCon.verifyIntegrity(file, dataHash);
+    }
 }
