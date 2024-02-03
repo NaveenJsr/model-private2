@@ -1,4 +1,4 @@
-# Blockchain-based Secure Cloud Identity Management
+# Blockchain-based Secure Cloud Identity Access Management
 
 ## How to run 
 
