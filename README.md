@@ -17,7 +17,7 @@
 3. copy the USER and CSP contract address from bash and past into the `clientmodel/src/config.js` file at the place of the `paste USER/CSP contract address`
 4. run application
    ```bash
-     cd clientmodel
+     cd model-private2/clientmodel
      npm install
      npm start
    ```
