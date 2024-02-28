@@ -168,7 +168,7 @@ contract USER {
     }
 
     //-------check data Integrity
-    function checkInterity(string memory file, string memory dataHash) public returns(bool){
+    function checkInterity(string memory file, string memory dataHash) public view returns(bool){
         return integrityCon.verifyIntegrity(file, dataHash);
     }
 }

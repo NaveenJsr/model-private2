@@ -175,6 +175,7 @@ contract CSP {
     mapping (address => Requests[]) public requests;
     mapping (address => Grant[]) public grantedAccess;
 
+
     function requestFile(address _user, address _csp, string memory _fileHash) external {
         Identity.VerificationResult memory verResult = identityCon.verifyToken(_user);
 
@@ -211,7 +212,7 @@ contract CSP {
                 }
             }
         }
-        if (integrityCon.verifyDataOwner(_user, _fileHash) == true){
+        else if (integrityCon.verifyDataOwner(_user, _fileHash) == true){
             Requests memory req;
             req.user = _user;
             req.fileHash = _fileHash;
