@@ -30,12 +30,7 @@ async function main() {
 
   console.log("CSP: ", csp.address);
   console.log("USER: ", user.address);
-  console.log("identity: ", identity.address);
-  console.log("ACL:", acl.address);
-  console.log("LOG: ", log.address);
-  console.log("file Integrity: ", integrity.address);
-  console.log("Gen Share: ", generateShare.address);
-  console.log("Gen Key: ", generateKey.address);
+  
 }
 
 main()
