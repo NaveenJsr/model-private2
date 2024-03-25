@@ -134,6 +134,7 @@ const UserDashboard = () => {
             // Call the generateKeyContract.input function
             const startTime = Date.now();
             const inputTransaction = await userContract.generageKey(file);
+            await inputTransaction.wait();
             const endTime = Date.now();
             const executionTime = endTime - startTime;
     
