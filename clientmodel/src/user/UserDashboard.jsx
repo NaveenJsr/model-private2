@@ -169,7 +169,7 @@ const UserDashboard = () => {
                 if (key.length === 0) {
                     key = await handleGenerateKey(file);
                 }
-    
+                console.log("key:",key)
                 decrypt(res, key);
             } 
             const endTime = Date.now();
