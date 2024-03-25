@@ -67,10 +67,15 @@ const GenerateKeyShare = () => {
             return;
         }
         try {
+            const startTime = Date.now();
             const res = await userContract.generateKeyShare(formData.key, formData.noOfShare, formData.filelocation);
             await res.wait();
+            const endTime = Date.now();
+            const executionTime = endTime - startTime;
+    
+            console.log("Process: generate key share, Execution Time:", executionTime, "ms");
             alert("Key share generated!");
-            window.location.reload();
+            // window.location.reload();
         } catch (error) {
             alert("Error in generating Key Shares");
             console.error(error);

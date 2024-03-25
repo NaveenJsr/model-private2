@@ -91,10 +91,15 @@ const UploadData = () => {
       console.log("fireConfig:", fireConig);
       const location = await uploadFile(file, fireConig);
       console.log("location:",location)
+      const startTime = Date.now();
       const res = await userContract.uploadFile(formData.csp, formData.desc, location, hashData);
       await res.wait();
+      const endTime = Date.now();
+      const executionTime = endTime - startTime;
+    
+      console.log("Process: upload data, Execution Time:", executionTime, "ms");
       alert("File Uploaded...");
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error("Error reading file:", error);
     }

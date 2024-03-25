@@ -44,11 +44,16 @@ const LoginUser = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const startTime = Date.now();
             const res = await userContract.authenticateUser(
                 formData.password
             );
             await res.wait()
-            window.location.reload();
+            const endTime = Date.now();
+            const executionTime = endTime - startTime;
+    
+            console.log("Process: login, Execution Time:", executionTime, "ms");
+            // window.location.reload();
         } catch (error) {
             console.log(error);
             alert("Fetching errors in registration...");

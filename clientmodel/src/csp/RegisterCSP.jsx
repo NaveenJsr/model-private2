@@ -46,17 +46,40 @@ const RegisterCSP = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
         try {
-            const res = await cspContract.registerCSP(formData.name, formData.apiKey, formData.authDomain, formData.projectId, formData.storageBucket, formData.messagingSenderId, formData.appId, formData.measurementId);
+            const startTime = Date.now();
+    
+            const res = await cspContract.registerCSP(
+                formData.name,
+                formData.apiKey,
+                formData.authDomain,
+                formData.projectId,
+                formData.storageBucket,
+                formData.messagingSenderId,
+                formData.appId,
+                formData.measurementId
+            );
+    
             await res.wait();
+    
+            const endTime = Date.now();
+            const executionTime = endTime - startTime;
+    
+            console.log("Process: Registration csp, Execution Time:", executionTime, "ms");
             alert("CSP registered successfully!");
-            window.location.reload();
+            
             console.log("cspRegistered:", res);
+            
+            // Reload the page
+            // window.location.reload();
+    
         } catch (error) {
-            console.log(error);
-            alert("Fetching error in registration...");
+            console.error(error);
+            alert("Error occurred during registration...");
         }
     };
+    
 
     const handleChange = (e) => {
         setFormData({

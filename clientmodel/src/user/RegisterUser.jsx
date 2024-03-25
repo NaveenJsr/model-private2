@@ -41,13 +41,18 @@ const RegisterUser = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const startTime = Date.now();
             const res = await userContract.registerUser(
                 formData.name,
                 formData.password
             );
             await res.wait();
+            const endTime = Date.now();
+            const executionTime = endTime - startTime;
+    
+            console.log("Process: Registration user, Execution Time:", executionTime, "ms");
             alert("User Registered Successfully!");
-            window.location.reload();
+            // window.location.reload();
             console.log("user registered:", res)
         } catch (error) {
             console.log(error);

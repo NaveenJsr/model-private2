@@ -90,10 +90,14 @@ const CreateACL = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
+            const startTime = Date.now();
             const res = await userContract.generateAcl(formData.csp, formData.fileLocation, formData.isPublic, formData.signature.s1, formData.signature.s2);
             await res.wait();
+            const endTime = Date.now();
+            const executionTime = endTime - startTime;
+            console.log("Process: create ACL, Execution Time:", executionTime, "ms");
             alert("ACL Successfully generated!");
-            window.location.reload();
+            // window.location.reload();
             console.log("successfully ACL generated",res);
         }
         catch(error){

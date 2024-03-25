@@ -89,11 +89,16 @@ const UserDashboard = () => {
     const handleSubmit = async (csp, file) => {
         try{
             // console.log(csp, file)
+            const startTime = Date.now();
             const resreq = await userContract.requestFile(csp, file);
             await resreq.wait();
-            console.log(resreq);
+            // console.log(resreq);
+            const endTime = Date.now();
+            const executionTime = endTime - startTime;
+    
+            console.log("Process: request file, Execution Time:", executionTime, "ms");
             alert("Accessed...");
-            window.location.reload();
+            // window.location.reload();
             // console.log("Accessrequested",resreq);
         }
         catch(error){
@@ -111,7 +116,12 @@ const UserDashboard = () => {
         if(!encData && !key){
             return;
         }
+        const startTime = Date.now();
         const decryptText = decryptFile(encData, key[0]);
+        const endTime = Date.now();
+        const executionTime = endTime - startTime;
+    
+        console.log("Process: decrypt file, Execution Time:", executionTime, "ms");
         const decryptedBlob = new Blob([decryptText], {type: 'text/plain'});
         const downloadLink = document.createElement('a');
         downloadLink.href = URL.createObjectURL(decryptedBlob);
@@ -122,7 +132,12 @@ const UserDashboard = () => {
     const handleGenerateKey = async (file) => {
         try {
             // Call the generateKeyContract.input function
+            const startTime = Date.now();
             const inputTransaction = await userContract.generageKey(file);
+            const endTime = Date.now();
+            const executionTime = endTime - startTime;
+    
+            console.log("Process: regenerate key, Execution Time:", executionTime, "ms");
             // console.log("key generation processing...")
             // Wait for the transaction to be confirmed
             await inputTransaction.wait();
@@ -140,6 +155,7 @@ const UserDashboard = () => {
     const handleDownload = async (file, location, encDataHash) => {
         console.log(file, location, encDataHash);
         try {
+            const startTime = Date.now();
             const res = await getText(location);
             // console.log(res);
             const dataHash1 = cryptoHash(res);
@@ -155,6 +171,10 @@ const UserDashboard = () => {
     
                 decrypt(res, key);
             } 
+            const endTime = Date.now();
+            const executionTime = endTime - startTime;
+    
+            console.log("Process: total download time, Execution Time:", executionTime, "ms");
         } catch (error) {
             console.error("Error during file download:", error);
         }

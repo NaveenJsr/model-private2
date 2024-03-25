@@ -36,7 +36,7 @@ export const getUserContract = async () => {
         
         const signer = provider.getSigner();
   
-        const contractAddress = "0x0840333ABd03297764745495b3618416969C01F9";
+        const contractAddress = "0xB29560Cc874Ee41af0Cd88f22e10D1CD6dAb7a01";
 
         const contract = new ethers.Contract(
           contractAddress,
@@ -67,7 +67,7 @@ export const getCSPContract = async () => {
 
       const signer = provider.getSigner();
 
-      const contractAddress = "0x28A3fB48eec9623af0578741277a0a475d9C3b96";
+      const contractAddress = "0x270e107b2dbc100AD232fB3174703cF36bFc4cc0";
 
       const contract = new ethers.Contract(
         contractAddress,

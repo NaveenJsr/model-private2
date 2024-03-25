@@ -75,8 +75,16 @@ const EncryptFile = () => {
             const textDecoder = new TextDecoder('utf-8');
             const originalText = textDecoder.decode(originalData);
             const secretKey = key;
+            const startTime = Date.now();
             const encrypted = encryptFile(originalText, secretKey);
+            const endTime = Date.now();
+            const executionTime = endTime - startTime;
+            console.log("Process: file encryption, Execution Time:", executionTime, "ms");
+            const st = Date.now();
             const signature = Signature(originalText);
+            const et = Date.now();
+            const exet = et - startTime;
+            console.log("Process: signature generation, Execution Time:", exet, "ms");
             setSignature(signature);
             const encryptedBlob = new Blob([encrypted]);
             const downloadLink = document.createElement('a');
