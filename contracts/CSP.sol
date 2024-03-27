@@ -175,12 +175,11 @@ contract CSP {
     mapping (address => Requests[]) public requests;
     mapping (address => Grant[]) public grantedAccess;
 
-
     function requestFile(address _user, address _csp, string memory _fileHash) external {
         Identity.VerificationResult memory verResult = identityCon.verifyToken(_user);
 
         require(verResult.success == true, "User verification failed");
-        if(aclCon.verifyAcl(_csp, _fileHash) == true){
+        if(aclCon.verifyAcl(_csp, _fileHash) == true || integrityCon.verifyDataOwner(_user, _fileHash) == true){
             Requests memory req;
             req.user = _user;
             req.fileHash = _fileHash;
@@ -189,14 +188,7 @@ contract CSP {
 
             for (uint i = 0; i < listedFiles[_csp].length; i++) {
                 if (keccak256(bytes(listedFiles[_csp][i].fileHash)) == keccak256(bytes(_fileHash))) {
-                    bool granted;
-                    for(uint j = 0; j < grantedAccess[_user].length; j++){
-                        if (bytes(grantedAccess[_user][j].fileHash).length != 0) {
-                            granted = true;
-                        }
-                    }
-                    if(granted == false){
-                        Grant memory newGrant = Grant({
+                    Grant memory newGrant = Grant({
                             fileHash: listedFiles[_csp][i].fileHash,
                             location: listedFiles[_csp][i].location
                         });
@@ -208,39 +200,6 @@ contract CSP {
                             grantTime: toStrCon.toString(block.timestamp)
                         });
                         logCon.addAccessLog(_csp, newlog);
-                    }
-                }
-            }
-        }
-        else if (integrityCon.verifyDataOwner(_user, _fileHash) == true){
-            Requests memory req;
-            req.user = _user;
-            req.fileHash = _fileHash;
-            req.isGranted = true;
-            requests[_csp].push(req);
-
-            for (uint i = 0; i < listedFiles[_csp].length; i++) {
-                if (keccak256(bytes(listedFiles[_csp][i].fileHash)) == keccak256(bytes(_fileHash))) {
-                    bool granted;
-                    for(uint j = 0; j < grantedAccess[_user].length; j++){
-                         if (bytes(grantedAccess[_user][j].fileHash).length != 0) {
-                            granted = true;
-                        }
-                    }
-                    if(granted == false){
-                        Grant memory newGrant = Grant({
-                            fileHash: listedFiles[_csp][i].fileHash,
-                            location: listedFiles[_csp][i].location
-                        });
-                        grantedAccess[_user].push(newGrant);
-
-                        LOG.AccessLog memory newlog = LOG.AccessLog({
-                            user: _user,
-                            fileHash: _fileHash,
-                            grantTime: toStrCon.toString(block.timestamp)
-                        });
-                        logCon.addAccessLog(_csp, newlog);
-                    }
                 }
             }
         }
