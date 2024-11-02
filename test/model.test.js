@@ -180,7 +180,7 @@ describe("user1 request", function () {
                     });
                     const recipt2 = await tx2.wait();
 
-                    console.log(`Transaction ${iteration + 1} completed successfully. | gasUsed ${receipt1.gasUsed + recipt2.gasUsed}`);
+                    console.log(`Transaction ${iteration + 1} completed successfully. | Upload file txn gasUsed ${receipt1.gasUsed}, Download file txn gasUsed ${recipt2.gasUsed}`);
                 } catch (error) {
                     console.error(`Transaction ${iteration + 1} failed:`, error);
                 }
